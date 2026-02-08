@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    Rooms List
+  </head>
+  <body>
+    <h1>Rooms</h1>
+
+    <button onclick="loadRooms()">Load Rooms</button>
+
+    <ul id="ul-rooms">
+      <!-- innerHTML -->
+    </ul>
+
+    <script>
+      async function loadRooms() {
+        const res = await fetch("http://localhost:8000/api/rooms/list");
+        const rooms = await res.json();
+
+        const list = document.getElementById("ul-rooms");
+        list.innerHTML = "";
+
+        rooms.forEach((room) => {
+          const li = document.createElement("li");
+
+          li.textContent = `${room.name} - ${room.description} (Capacity: ${room.capacity})`;
+
+          list.appendChild(li);
+        });
+      }
+    </script>
+  </body>
+</html>
