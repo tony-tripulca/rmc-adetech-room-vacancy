@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Create a Room</title>
+  </head>
+  <body>
+    <h1>Create a Room</h1>
+
+    <form id="form-room">
+      <input type="text" name="name" placeholder="Room name" required />
+      <input type="number" name="capacity" placeholder="Capacity" required />
+      <textarea name="description" placeholder="Description"></textarea>
+      <button type="submit">Create Room</button>
+    </form>
+
+    <script>
+      document
+        .getElementById("form-room")
+        .addEventListener("submit", createRoom);
+
+      async function createRoom(event) {
+        event.preventDefault();
+
+        const form = event.target;
+
+        const data = {
+          name: form.name.value,
+          capacity: form.capacity.value,
+          description: form.description.value,
+        };
+
+        const res = await fetch("http://localhost:8000/api/rooms/create", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        const result = await res.json();
+        console.log(result);
+      }
+    </script>
+  </body>
+</html>
