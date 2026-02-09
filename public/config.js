@@ -3,7 +3,7 @@ window.config = {
 
   api: {
     dev: "http://localhost:8000",
-    prod: "https://my-app.vercel.app",
+    prod: "https://rmc-adetech-room-vacancy.vercel.app",
   },
 
   get url() {
