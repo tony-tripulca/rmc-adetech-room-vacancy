@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    Rooms List
+    <title>Room list</title>
   </head>
   <body>
     <h1>Rooms</h1>
@@ -12,9 +12,10 @@
       <!-- innerHTML -->
     </ul>
 
+    <script src="../config.js"></script>
     <script>
       async function loadRooms() {
-        const res = await fetch("http://localhost:8000/api/rooms/list");
+        const res = await fetch(`${config.url}/api/rooms/list`);
         const rooms = await res.json();
 
         const list = document.getElementById("ul-rooms");

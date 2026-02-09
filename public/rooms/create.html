@@ -13,6 +13,7 @@
       <button type="submit">Create Room</button>
     </form>
 
+    <script src="../config.js"></script>
     <script>
       document
         .getElementById("form-room")
@@ -29,7 +30,7 @@
           description: form.description.value,
         };
 
-        const res = await fetch("http://localhost:8000/api/rooms/create", {
+        const res = await fetch(`${config.url}/api/rooms/create`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
