@@ -1,8 +1,6 @@
 const crypto = require("crypto");
 const { getDriver } = require("./driver");
 
-let driverPromise = getDriver();
-
 // ---------- helpers ----------
 
 function id() {
@@ -14,12 +12,12 @@ function id() {
 }
 
 async function load() {
-  const driver = await driverPromise;
+  const driver = await getDriver();
   return (await driver.read()) || {};
 }
 
 async function save(data) {
-  const driver = await driverPromise;
+  const driver = await getDriver();
   await driver.write(null, data);
 }
 
@@ -39,6 +37,7 @@ const db = {
     col.push(record);
 
     await save(dbData);
+
     return record;
   },
 
@@ -64,6 +63,7 @@ const db = {
     Object.assign(item, updates);
 
     await save(dbData);
+
     return item;
   },
 
@@ -77,6 +77,7 @@ const db = {
     col.splice(index, 1);
 
     await save(dbData);
+
     return true;
   },
 

@@ -48,7 +48,7 @@ function createBlobDriver() {
         const result = await put(FILE_KEY, JSON.stringify(data, null, 2), {
           access: "public",
           contentType: "application/json",
-          addRandomSuffix: false, // 👈 ensures stable filename
+          addRandomSuffix: false,
         });
 
         console.log("Blob write result:", result.pathname);
@@ -90,12 +90,8 @@ function createFSDriver() {
 }
 
 // ---------- factory ----------
-let driver;
-
 function getDriver() {
-  if (!driver) {
-    driver = isVercel ? createBlobDriver() : createFSDriver();
-  }
+  const driver = isVercel ? createBlobDriver() : createFSDriver();
 
   return Promise.resolve(driver);
 }
