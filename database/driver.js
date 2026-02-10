@@ -12,16 +12,9 @@ function createBlobDriver() {
     async read() {
       try {
         const blob = await get(FILE_KEY);
-
         if (!blob) return {};
 
-        // 👇 fetch the actual file content
-        const res = await fetch(blob.url);
-
-        if (!res.ok) return {};
-
-        const text = await res.text();
-
+        const text = await blob.text();
         return text ? JSON.parse(text) : {};
       } catch (err) {
         console.error("Blob read error:", err);
@@ -30,15 +23,10 @@ function createBlobDriver() {
     },
 
     async write(_, data) {
-      try {
-        await put(FILE_KEY, JSON.stringify(data), {
-          access: "public",
-          contentType: "application/json",
-        });
-      } catch (err) {
-        console.error("Blob write error:", err);
-        throw err;
-      }
+      await put(FILE_KEY, JSON.stringify(data), {
+        access: "private",
+        contentType: "application/json",
+      });
     },
   };
 }
@@ -49,7 +37,7 @@ function createFSDriver() {
 
   function readFile() {
     if (!fs.existsSync(DB_FILE)) {
-      fs.writeFileSync(DB_FILE, JSON.stringify({}), "utf8");
+      fs.writeFileSync(DB_FILE, "{}");
     }
     return JSON.parse(fs.readFileSync(DB_FILE, "utf8"));
   }
