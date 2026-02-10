@@ -17,7 +17,7 @@ function createBlobDriver() {
         const { blobs } = await list({ prefix: FILE_KEY });
 
         if (!blobs.length) {
-          console.log("No blob found → empty DB");
+          console.log("No blob found");
           return {};
         }
 
@@ -78,12 +78,10 @@ function createFSDriver() {
 
   return {
     async read() {
-      console.log("Reading local FS DB");
       return readFile();
     },
 
     async write(_, value) {
-      console.log("Writing local FS DB");
       writeFile(value);
     },
   };

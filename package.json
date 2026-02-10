@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "@vercel/blob": "^2.2.0",
-    "nodemon": "^3.1.11"
+    "@vercel/blob": "^2.2.0"
   }
 }

@@ -7,5 +7,6 @@ module.exports = async (req, res) => {
   }
 
   const rooms = await db.findAll("rooms");
+  
   return okay(res, rooms);
 };
