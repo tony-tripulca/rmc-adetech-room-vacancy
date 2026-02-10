@@ -12,9 +12,15 @@ function createBlobDriver() {
     async read() {
       try {
         const blob = await get(FILE_KEY);
-        if (!blob) return {};
 
-        const text = await blob.text();
+        if (!blob || !blob.url) return {};
+
+        const res = await fetch(blob.url);
+
+        if (!res.ok) return {};
+
+        const text = await res.text();
+
         return text ? JSON.parse(text) : {};
       } catch (err) {
         console.error("Blob read error:", err);
