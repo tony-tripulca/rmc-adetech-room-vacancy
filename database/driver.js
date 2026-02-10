@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const { put, get } = require("@vercel/blob");
 
 const isVercel = process.env.VERCEL === "1";
 
@@ -8,12 +7,18 @@ const FILE_KEY = "collections.json";
 
 // ---------- Blob driver ----------
 function createBlobDriver() {
+  // lazy import (only on Vercel)
+  const { put, head } = require("@vercel/blob");
+
   return {
     async read() {
       try {
-        const blob = await get(FILE_KEY);
+        const blob = await head(FILE_KEY);
 
-        if (!blob || !blob.url) return {};
+        if (!blob?.url) {
+          console.log("Blob not found");
+          return {};
+        }
 
         const res = await fetch(blob.url);
 
@@ -30,7 +35,7 @@ function createBlobDriver() {
 
     async write(_, data) {
       await put(FILE_KEY, JSON.stringify(data), {
-        access: "private",
+        access: "public",
         contentType: "application/json",
       });
     },
@@ -68,7 +73,9 @@ let driver;
 
 function getDriver() {
   if (!driver) {
-    driver = isVercel ? createBlobDriver() : createFSDriver();
+    driver = isVercel
+      ? createBlobDriver()
+      : createFSDriver();
   }
   return Promise.resolve(driver);
 }
