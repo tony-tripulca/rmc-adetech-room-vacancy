@@ -1,7 +1,6 @@
 const crypto = require("crypto");
 const { getDriver } = require("./driver");
 
-const ROOT_KEY = "lite-db";
 let driverPromise = getDriver();
 
 // ---------- helpers ----------
@@ -16,12 +15,12 @@ function id() {
 
 async function load() {
   const driver = await driverPromise;
-  return (await driver.read(ROOT_KEY)) || {};
+  return (await driver.read()) || {};
 }
 
 async function save(data) {
   const driver = await driverPromise;
-  await driver.write(ROOT_KEY, data);
+  await driver.write(null, data);
 }
 
 function ensure(db, name) {
@@ -49,8 +48,10 @@ const db = {
   },
 
   async findById(collection, recordId) {
-    const items = await this.findAll(collection);
-    return items.find((x) => x.id === recordId) || null;
+    const dbData = await load();
+    const col = ensure(dbData, collection);
+
+    return col.find((x) => x.id === recordId) || null;
   },
 
   async update(collection, recordId, updates) {
@@ -61,8 +62,8 @@ const db = {
     if (!item) return null;
 
     Object.assign(item, updates);
-    await save(dbData);
 
+    await save(dbData);
     return item;
   },
 
@@ -74,8 +75,8 @@ const db = {
     if (index === -1) return false;
 
     col.splice(index, 1);
-    await save(dbData);
 
+    await save(dbData);
     return true;
   },
 
