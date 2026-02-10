@@ -1,0 +1,16 @@
+{
+  "rooms": [
+    {
+      "id": "4441022a",
+      "name": "asd",
+      "capacity": "123",
+      "description": "asd"
+    },
+    {
+      "id": "0f524ee8",
+      "name": "asd",
+      "capacity": "123",
+      "description": "asd"
+    }
+  ]
+}

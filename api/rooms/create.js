@@ -1,6 +1,6 @@
 const { okay, badRequest, notAllowed } = require("../../lib/response");
 const { bodyParser } = require("../../lib/body-parser");
-const db = require("../../lib/local-db");
+const db = require("../../database/service");
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
@@ -16,7 +16,6 @@ module.exports = async (req, res) => {
   } catch (err) {
     return badRequest(res, err.message);
   }
-
 
   return okay(res, body);
 };
