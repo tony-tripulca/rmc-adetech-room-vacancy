@@ -1,5 +1,5 @@
 window.config = {
-  env: "prod",
+  env: "dev",
 
   api: {
     dev: "http://localhost:8000",
