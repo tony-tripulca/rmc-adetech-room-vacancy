@@ -24,7 +24,7 @@
         rooms.forEach((room) => {
           const li = document.createElement("li");
 
-          li.textContent = `${room.name} - ${room.description} (Capacity: ${room.capacity})`;
+          li.textContent = `[${room.id}] ${room.name} - ${room.description} (Capacity: ${room.capacity})`;
 
           list.appendChild(li);
         });

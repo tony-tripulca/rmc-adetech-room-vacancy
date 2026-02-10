@@ -1,6 +1,6 @@
-require("../models");
 const { okay, badRequest, notAllowed } = require("../../lib/response");
 const { bodyParser } = require("../../lib/body-parser");
+const db = require("../../lib/local-db");
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
@@ -11,11 +11,12 @@ module.exports = async (req, res) => {
 
   try {
     body = await bodyParser(req);
+    db.create("rooms", body);
+
   } catch (err) {
     return badRequest(res, err.message);
   }
 
-  global.rooms.push(body);
 
   return okay(res, body);
 };
