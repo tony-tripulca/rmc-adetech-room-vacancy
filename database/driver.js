@@ -1,29 +1,36 @@
 const fs = require("fs");
 const path = require("path");
 
-const isVercel =
-  process.env.VERCEL === "1" || process.env.VERCEL_ENV === "production";
+const isVercel = !!process.env.VERCEL || !!process.env.BLOB_READ_WRITE_TOKEN;
 
 const FILE_KEY = "collections.json";
 
+console.log("Running on Vercel:", isVercel);
+
 // ---------- Blob driver ----------
 function createBlobDriver() {
-  // lazy import (only on Vercel)
-  const { put, head } = require("@vercel/blob");
+  const { put, list } = require("@vercel/blob");
 
   return {
     async read() {
       try {
-        const blob = await head(FILE_KEY);
+        const { blobs } = await list({ prefix: FILE_KEY });
 
-        if (!blob?.url) {
-          console.log("Blob not found");
+        if (!blobs.length) {
+          console.log("No blob found → empty DB");
           return {};
         }
 
+        const blob = blobs[0];
+
+        console.log("Reading blob:", blob.pathname);
+
         const res = await fetch(blob.url);
 
-        if (!res.ok) return {};
+        if (!res.ok) {
+          console.error("Fetch failed:", res.status);
+          return {};
+        }
 
         const text = await res.text();
 
@@ -35,14 +42,20 @@ function createBlobDriver() {
     },
 
     async write(_, data) {
-      console.log("Writing blob:", FILE_KEY);
+      try {
+        console.log("Writing blob:", FILE_KEY);
 
-      const result = await put(FILE_KEY, JSON.stringify(data), {
-        access: "public",
-        contentType: "application/json",
-      });
+        const result = await put(FILE_KEY, JSON.stringify(data, null, 2), {
+          access: "public",
+          contentType: "application/json",
+          addRandomSuffix: false, // 👈 ensures stable filename
+        });
 
-      console.log("Blob write result:", result);
+        console.log("Blob write result:", result.pathname);
+      } catch (err) {
+        console.error("Blob write error:", err);
+        throw err;
+      }
     },
   };
 }
@@ -55,6 +68,7 @@ function createFSDriver() {
     if (!fs.existsSync(DB_FILE)) {
       fs.writeFileSync(DB_FILE, "{}");
     }
+
     return JSON.parse(fs.readFileSync(DB_FILE, "utf8"));
   }
 
@@ -64,10 +78,12 @@ function createFSDriver() {
 
   return {
     async read() {
+      console.log("Reading local FS DB");
       return readFile();
     },
 
     async write(_, value) {
+      console.log("Writing local FS DB");
       writeFile(value);
     },
   };
@@ -80,6 +96,7 @@ function getDriver() {
   if (!driver) {
     driver = isVercel ? createBlobDriver() : createFSDriver();
   }
+
   return Promise.resolve(driver);
 }
 
