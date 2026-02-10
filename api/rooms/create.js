@@ -7,15 +7,14 @@ module.exports = async (req, res) => {
     return notAllowed(res);
   }
 
-  let body;
+  let result;
 
   try {
-    body = await bodyParser(req);
-    db.create("rooms", body);
-
+    result = await db.create("rooms", await bodyParser(req));
+    console.log("Created:", result);
   } catch (err) {
     return badRequest(res, err.message);
   }
 
-  return okay(res, body);
+  return okay(res, result);
 };
