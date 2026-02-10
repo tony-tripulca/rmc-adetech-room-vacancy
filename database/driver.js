@@ -73,9 +73,7 @@ let driver;
 
 function getDriver() {
   if (!driver) {
-    driver = isVercel
-      ? createBlobDriver()
-      : createFSDriver();
+    driver = isVercel ? createBlobDriver() : createFSDriver();
   }
   return Promise.resolve(driver);
 }
