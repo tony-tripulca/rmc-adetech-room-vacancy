@@ -1,7 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
-const isVercel = process.env.VERCEL === "1";
+const isVercel =
+  process.env.VERCEL === "1" || process.env.VERCEL_ENV === "production";
 
 const FILE_KEY = "collections.json";
 
@@ -34,10 +35,14 @@ function createBlobDriver() {
     },
 
     async write(_, data) {
-      await put(FILE_KEY, JSON.stringify(data), {
+      console.log("Writing blob:", FILE_KEY);
+
+      const result = await put(FILE_KEY, JSON.stringify(data), {
         access: "public",
         contentType: "application/json",
       });
+
+      console.log("Blob write result:", result);
     },
   };
 }
