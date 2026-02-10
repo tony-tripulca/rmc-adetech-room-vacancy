@@ -49,6 +49,7 @@ function createBlobDriver() {
           access: "public",
           contentType: "application/json",
           addRandomSuffix: false,
+          allowOverwrite: true,
         });
 
         console.log("Blob write result:", result.pathname);
